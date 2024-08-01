@@ -25,15 +25,34 @@ docker logs mysql-container
 
 
 # docker compose file
-version: '3.1'
+
+sudo apt install docker-compose
+
+
+
+version: '3.8'
 
 services:
-  db:
-    image: mysql
-    restart: always
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_ROOT_PASSWORD: my-secret-pw  # Set the root password
+      MYSQL_DATABASE: mydatabase         # Create a default database
+      MYSQL_USER: myuser                 # Optional: Set a default user
+      MYSQL_PASSWORD: myuserpassword     # Optional: Set a default user password
     ports:
-      - "3306:3306"
+      - "3306:3306"                      # Map port 3306 of the container to port 3306 on the host
+    volumes:
+      - mydbdata:/var/lib/mysql          # Persist data even if the container stops
+    restart: always
+
+volumes:
+  mydbdata:                              # Defines the volume
+
+docker-compose up -d
+docker-compose ps
+docker exec -it mysql-container mysql -u root -p
+
 
 ```
